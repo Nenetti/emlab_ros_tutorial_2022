@@ -7,12 +7,12 @@
 # ==================================================================================================================
 export HOST_UID=$(id -u)
 export HOST_GID=$(id -g)
-export APP_USER_NAME=noetic
+export APP_USER_NAME=app
 export SIMULATOR_USER_NAME=simulator
 #export APP_USER_NAME=${USER}
 
-APP_SERVICE=emlab-tutorial-client
-SIMULATION_SERVICE=emlab-tutorial-simulator
+app_container=emlab-tutorial-client
+simulation_container=emlab-tutorial-simulator
 N_SERVICE=2
 
 if [ -e /proc/driver/nvidia/version ]; then
@@ -27,7 +27,7 @@ fi
 #
 # ==================================================================================================================
 LOCK_FILE=/tmp/catkin.lock
-if [ "$(docker inspect --format="{{.State.Status}}" ${APP_SERVICE})" != "running" ]; then
+if [ "$(docker inspect --format="{{.State.Status}}" ${app_container})" != "running" ]; then
   # Generate lock file
   if [ ! -e ${LOCK_FILE} ]; then
     touch ${LOCK_FILE}
@@ -71,8 +71,8 @@ if [ "$(docker inspect --format="{{.State.Status}}" ${APP_SERVICE})" != "running
 
   rm ${PIPE}
 
-  docker exec -it -u ${APP_USER_NAME} ${APP_SERVICE} /bin/bash -i -c "source /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin build"
-  docker exec -it -u ${SIMULATOR_USER_NAME} ${SIMULATION_SERVICE} /bin/bash -i -c "source /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin build"
+  docker exec -it -u ${APP_USER_NAME} ${app_container} /bin/bash -i -c "source /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin build"
+  docker exec -it -u ${SIMULATOR_USER_NAME} ${simulation_container} /bin/bash -i -c "source /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin build"
   rm ${LOCK_FILE}
 
 else
@@ -96,4 +96,4 @@ fi
 #   Enter the docker container
 #
 # ==================================================================================================================
-#docker exec -it -u ${APP_USER_NAME} ${APP_SERVICE} /bin/bash
+#docker exec -it -u ${APP_USER_NAME} ${app_container} /bin/bash
