@@ -31,22 +31,3 @@ function catkin() {
     fi
   fi
 }
-
-# ======================================================================================================================
-#
-#   Load setup.bash
-#
-# ======================================================================================================================
-SETUP_BASH_FILE="${HOME}/catkin_ws/devel/setup.bash"
-
-if [ -e ${SETUP_BASH_FILE} ]; then
-  source ${SETUP_BASH_FILE}
-  echo "source ${SETUP_BASH_FILE}"
-else
-  source /opt/ros/noetic/setup.bash
-  echo "source /opt/ros/noetic/setup.bash"
-fi
-
-export XDG_RUNTIME_DIR=/run/user/$(id -u)
-
-PYTHONDONTWRITEBYTECODE=1
