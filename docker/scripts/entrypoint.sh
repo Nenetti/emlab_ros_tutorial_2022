@@ -11,7 +11,6 @@ if [[ -n "${NAME}" ]] && [[ "${NAME}" != "${DEFAULT_USER}" ]]; then
 else
   NAME=${DEFAULT_USER}
 fi
-echo "${NAME}   ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Set Host UID.
 if [[ -n "${USER_ID}" ]]; then
@@ -25,7 +24,13 @@ if [[ -n "${GROUP_ID}" ]] && [[ "${GROUP_ID}" != "$(id -g ${NAME})" ]]; then
   usermod -g "${GROUP_ID}" "${NAME}"
 fi
 chown -R $(id -u ${NAME}):$(id -g ${NAME}) "/run/user/$(id -u ${NAME})"
+echo "${NAME}   ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers
 
+# Home directory.
+if [[ "${NAME}" != "${DEFAULT_USER}" ]]; then
+  usermod -d "/home/${NAME}" "${NAME}"
+  ln -s "/home/${DEFAULT_USER}" "/home/${NAME}"
+fi
 # ==================================================================================================================
 #
 #   DEBUG
@@ -52,10 +57,5 @@ echo "User ID: ${DEBUG_USER_ID}"
 echo "Group ID: ${DEBUG_GROUP_ID}"
 echo "Login Command: $*"
 echo
-if [ "${DOCKER_RUNTIME}" = "nvidia" ]; then
-  nvidia-smi
-  echo
-fi
-echo ""
 echo "Complete initialization of entrypoint"
 exec "$@"

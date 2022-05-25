@@ -1,0 +1,3 @@
+[submodule "catkin_ws/simulator/src/fetch_gazebo"]
+	path = catkin_ws/simulator/src/fetch_gazebo
+	url = https://github.com/fetchrobotics/fetch_gazebo.git

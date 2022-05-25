@@ -7,10 +7,13 @@
 # ==================================================================================================================
 export HOST_UID=$(id -u)
 export HOST_GID=$(id -g)
-export USER_NAME=noetic
-#export USER_NAME=${USER}
+export APP_USER_NAME=noetic
+export SIMULATOR_USER_NAME=simulator
+#export APP_USER_NAME=${USER}
 
-SERVICE=noetic-tutorial
+APP_SERVICE=emlab-tutorial-client
+SIMULATION_SERVICE=emlab-tutorial-simulator
+N_SERVICE=2
 
 if [ -e /proc/driver/nvidia/version ]; then
   export DOCKER_RUNTIME=nvidia
@@ -24,7 +27,7 @@ fi
 #
 # ==================================================================================================================
 LOCK_FILE=/tmp/catkin.lock
-if [ "$(docker inspect --format="{{.State.Status}}" ${SERVICE})" != "running" ]; then
+if [ "$(docker inspect --format="{{.State.Status}}" ${APP_SERVICE})" != "running" ]; then
   # Generate lock file
   if [ ! -e ${LOCK_FILE} ]; then
     touch ${LOCK_FILE}
@@ -53,10 +56,14 @@ if [ "$(docker inspect --format="{{.State.Status}}" ${SERVICE})" != "running" ];
   mkfifo ${PIPE}
   docker-compose -f ./docker/docker-compose.yml logs -f --since 0s | tee ${PIPE} >/dev/null &
   PID=$!
+  count=0
 
   cat ${PIPE} | while read line; do
     echo ${line}
     if [[ ${line} =~ ${CompleteWord} ]]; then
+      count=$((count+1))
+    fi
+    if [[ ${count} == ${N_SERVICE} ]]; then
       kill $PID
       break
     fi
@@ -64,17 +71,21 @@ if [ "$(docker inspect --format="{{.State.Status}}" ${SERVICE})" != "running" ];
 
   rm ${PIPE}
 
-  docker exec -it -u ${USER_NAME} noetic-tutorial /bin/bash -i -c "source /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin build"
+  docker exec -it -u ${APP_USER_NAME} ${APP_SERVICE} /bin/bash -i -c "source /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin build"
+  docker exec -it -u ${SIMULATOR_USER_NAME} ${SIMULATION_SERVICE} /bin/bash -i -c "source /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin build"
   rm ${LOCK_FILE}
 
 else
-
+  # ==================================================================================================================
+  #
+  #   Wait docker-compose up
+  #
+  # ==================================================================================================================
   if [ -e ${LOCK_FILE} ]; then
     echo "Wait for docker-compose up ..."
   fi
 
-  while [ -e ${LOCK_FILE} ]
-  do
+  while [ -e ${LOCK_FILE} ]; do
     sleep 0.1
   done
 
@@ -85,4 +96,4 @@ fi
 #   Enter the docker container
 #
 # ==================================================================================================================
-docker exec -it -u ${USER_NAME} noetic-tutorial /bin/bash
+#docker exec -it -u ${APP_USER_NAME} ${APP_SERVICE} /bin/bash

@@ -1,0 +1,4 @@
+<launch>
+  <include file="$(find fetch_gazebo)/launch/playground.launch" />
+  <include file="$(find em_fetch_rviz)/launch/rviz.launch" />
+</launch>

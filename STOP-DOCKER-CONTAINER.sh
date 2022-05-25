@@ -1,5 +1,4 @@
 #!/bin/bash
 
-SERVICE=ros-noetic
-docker stop ${SERVICE}
-docker rm ${SERVICE}
+docker-compose -f ./docker/docker-compose.yml stop
+docker-compose -f ./docker/docker-compose.yml rm -f

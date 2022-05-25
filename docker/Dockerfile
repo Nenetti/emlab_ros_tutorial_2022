@@ -44,7 +44,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #   Setup Timezone
 #
 # ======================================================================================================================
-
 # ------------------------- #
 #       Define
 # ------------------------- #
@@ -88,6 +87,9 @@ ARG PYTHON3_VCSTOOLS_VERSION=*
 ARG PYTHON3_CATKIN_TOOLS_VERSION=*
 ARG PYTHON3_OSRF_PYCOMMON_VERSION=*
 
+ARG ROS_FETCH_DESCRIPTION=*
+
+
 # ------------------------- #
 #       Install
 # ------------------------- #
@@ -116,10 +118,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-osrf-pycommon=${PYTHON3_OSRF_PYCOMMON_VERSION} \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-noetic-fetch-description=${ROS_FETCH_DESCRIPTION} \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Initialize 'rosdep'.
 # http://wiki.ros.org/rosdep
 ENV ROS_DISTRO noetic
 RUN rosdep init && rosdep update --rosdistro ${ROS_DISTRO}
+
+
 
 # ======================================================================================================================
 #
@@ -141,7 +149,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Configure ALSA so that containerized programs can use the audio I/O forwarded to the PulseAudio daemon on the host system.
-COPY ./scripts/asound.conf /etc/asound.conf
+COPY scripts/asound.conf /etc/asound.conf
 
 # ======================================================================================================================
 #
@@ -204,6 +212,31 @@ RUN python3 -m pip install --upgrade pip
 
 # ======================================================================================================================
 #
+#   Install Fetch
+#
+# ======================================================================================================================
+# https://docs.fetchrobotics.com/indigo_to_melodic.html
+
+# ------------------------- #
+#       Define
+# ------------------------- #
+ARG FETCH_ROS_VERSION=*
+ARG FETCH_DESCRIPTION=*
+ARG ROS_ROBOT_CONTROLLERS=*
+ARG ROS_RGBD_LAUNCH=*
+
+# ------------------------- #
+#       Install
+# ------------------------- #
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-noetic-fetch-ros=${FETCH_ROS_VERSION} \
+    ros-noetic-fetch-description=${FETCH_DESCRIPTION} \
+    ros-noetic-robot-controllers=${ROS_ROBOT_CONTROLLERS} \
+    ros-noetic-rgbd-launch=${ROS_RGBD_LAUNCH} \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# ======================================================================================================================
+#
 #   User Setup
 #
 # ======================================================================================================================
@@ -233,14 +266,9 @@ RUN useradd -m -s /bin/bash -u ${DEFAULT_USER_TEMP_ID} -g ${DEFAULT_USER_GROUP_T
     && echo ${DEFAULT_USER}:${DEFAULT_USER_PASSWORD} | chpasswd
 
 # Set startup script of reconfiguring User ID and Group ID.
-COPY ./scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 755 /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
-## Set startup script of reconfiguring User ID and Group ID.
-#COPY ./scripts/entrypoint_ros.sh /usr/local/bin/entrypoint_ros.sh
-#RUN chmod 755 /usr/local/bin/entrypoint_ros.sh
-#ENTRYPOINT ["/usr/local/bin/entrypoint_ros.sh", "/usr/local/bin/entrypoint.sh"]
 
 # ======================================================================================================================
 #
@@ -254,13 +282,17 @@ RUN sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' /home/${DEFAULT_U
 RUN mkdir -p ${DEFAULT_USER_HOME}/catkin_ws/src \
     && chown -R $(id -u ${DEFAULT_USER}):$(id -g ${DEFAULT_USER}) ${DEFAULT_USER_HOME}/catkin_ws
 
+RUN mkdir -p ${DEFAULT_USER_HOME}/test
+
 # Add bash_aliases.
-COPY ./scripts/.bash_aliases ${DEFAULT_USER_HOME}/.bash_aliases
-RUN chown -R $(id -u ${DEFAULT_USER}):$(id -g ${DEFAULT_USER}) "${DEFAULT_USER_HOME}/.bash_aliases" \
-    && chmod 755 ${DEFAULT_USER_HOME}/.bash_aliases
+COPY scripts/.bash_aliases ${DEFAULT_USER_HOME}/.bash_aliases
+COPY scripts/.bashrc_ros ${DEFAULT_USER_HOME}/.bashrc_ros
+RUN chown -R $(id -u ${DEFAULT_USER}):$(id -g ${DEFAULT_USER}) "${DEFAULT_USER_HOME}/.bash_aliases" "${DEFAULT_USER_HOME}/.bashrc_ros" \
+    && chmod 755 ${DEFAULT_USER_HOME}/.bash_aliases ${DEFAULT_USER_HOME}/.bashrc_ros
 
 # Copy python3 symbolic link.
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
+RUN echo "source ${DEFAULT_USER_HOME}/.bashrc_ros" >> ${DEFAULT_USER_HOME}/.bashrc
 # Enter the container with a Bash shell.
 CMD ["/bin/bash"]

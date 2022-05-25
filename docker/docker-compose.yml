@@ -1,12 +1,13 @@
 version: "3.4"
 
 services:
-  ros:
+  simulator:
     hostname: ${HOSTNAME}
-    image: emlab_ros_tutorial:2022
-    container_name: noetic-tutorial
+    image: emlab/tutorial/fetch/client:noetic
+    container_name: emlab-tutorial-simulator
     build:
       context: ./
+      dockerfile: Dockerfile
       args:
         - FROM_IMAGE=nvidia/cudagl:11.3.1-devel-ubuntu20.04
     volumes:
@@ -22,22 +23,67 @@ services:
         source: ${XDG_RUNTIME_DIR}/gdm/Xauthority
         target: ${XDG_RUNTIME_DIR}/gdm/Xauthority
       # Init environement variables
-#      - type: bind
-#        source: ../catkin_ws/src
-#        target: /home/docker/catkin_ws/src
-#      - type: bind
-#        source: ../catkin_ws/dist-packages
-#        target: /home/docker/catkin_ws/dist-packages
+      - type: bind
+        source: ../catkin_ws/simulator/src
+        target: /home/docker/catkin_ws/src
+    environment:
+      # Display X Server GUIs.
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      # ID.
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
+      - USER_NAME=${SIMULATOR_USER_NAME}
+    network_mode: host
+    privileged: true
+    tty: true
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: all
+            capabilities: [gpu]
+
+  client:
+    hostname: ${HOSTNAME}
+    image: emlab/tutorial/fetch/client:noetic
+    container_name: emlab-tutorial-client
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - FROM_IMAGE=nvidia/cudagl:11.3.1-devel-ubuntu20.04
+    volumes:
+      # Grant display access to X Server.
+      - type: bind
+        source: /tmp/.X11-unix
+        target: /tmp/.X11-unix
+      # Grant audio access to PulseAudio.
+      - type: bind
+        source: ${XDG_RUNTIME_DIR}/pulse/native
+        target: ${XDG_RUNTIME_DIR}/pulse/native
+      - type: bind
+        source: ${XDG_RUNTIME_DIR}/gdm/Xauthority
+        target: ${XDG_RUNTIME_DIR}/gdm/Xauthority
+      # Init environement variables
+      - type: bind
+        source: ../catkin_ws/app/src
+        target: /home/docker/catkin_ws/src
+      - type: bind
+        source: ../catkin_ws/app/dist-packages
+        target: /home/docker/catkin_ws/app/dist-packages
     environment:
       # Display X Server GUIs.
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
       # PulseAudio.
-      - PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native
+#      - PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native
       # ID.
       - HOST_UID=${HOST_UID}
       - HOST_GID=${HOST_GID}
-      - USER_NAME=${USER_NAME}
+      - USER_NAME=${APP_USER_NAME}
     network_mode: host
     privileged: true
     tty: true
