@@ -285,10 +285,17 @@ RUN mkdir -p ${DEFAULT_USER_HOME}/catkin_ws/src \
 RUN mkdir -p ${DEFAULT_USER_HOME}/test
 
 # Add bash_aliases.
-COPY scripts/.bash_aliases ${DEFAULT_USER_HOME}/.bash_aliases
-COPY scripts/.bashrc_ros ${DEFAULT_USER_HOME}/.bashrc_ros
-RUN chown -R $(id -u ${DEFAULT_USER}):$(id -g ${DEFAULT_USER}) "${DEFAULT_USER_HOME}/.bash_aliases" "${DEFAULT_USER_HOME}/.bashrc_ros" \
-    && chmod 755 ${DEFAULT_USER_HOME}/.bash_aliases ${DEFAULT_USER_HOME}/.bashrc_ros
+COPY "./scripts/.bash_aliases" "${DEFAULT_USER_HOME}/.bash_aliases"
+COPY "./scripts/.bashrc_ros" "${DEFAULT_USER_HOME}/.bashrc_ros"
+COPY "./scripts/terminator_roslaunch.sh" "${DEFAULT_USER_HOME}/catkin_ws/terminator_roslaunch.sh"
+RUN chown -R $(id -u ${DEFAULT_USER}):$(id -g ${DEFAULT_USER}) \
+        "${DEFAULT_USER_HOME}/.bash_aliases" \
+        "${DEFAULT_USER_HOME}/.bashrc_ros"  \
+        "${DEFAULT_USER_HOME}/catkin_ws/terminator_roslaunch.sh" \
+    && chmod 755 \
+        "${DEFAULT_USER_HOME}/.bash_aliases" \
+        "${DEFAULT_USER_HOME}/.bashrc_ros"  \
+        "${DEFAULT_USER_HOME}/catkin_ws/terminator_roslaunch.sh"
 
 # Copy python3 symbolic link.
 RUN ln -s /usr/bin/python3 /usr/bin/python

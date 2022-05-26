@@ -31,3 +31,10 @@ function catkin() {
     fi
   fi
 }
+
+function roslaunch_from_terminator() {
+  if [ -n "${TERMINATOR_LAUNCH}" ]; then
+    array=$(echo "${TERMINATOR_LAUNCH}")
+    bash ~/catkin_ws/terminator_roslaunch.sh ${array[0]} ${array[1]}
+  fi
+}
