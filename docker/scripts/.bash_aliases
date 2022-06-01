@@ -1,40 +1,17 @@
 #!/bin/bash
-# ======================================================================================================================
-#
-#   Overwrite catkin command
-#
-# ======================================================================================================================
-function catkin() {
-  SOURCE_DIR=${HOME}/catkin_ws/devel/.private
-  TARGET_DIR=${HOME}/catkin_ws/dist-packages
-  SETUP_BASH_FILE=${HOME}/catkin_ws/devel/setup.bash
-  current_directory=$(pwd)
 
-  # Execute catkin command
-  /usr/bin/catkin $@
+function load_env(){
+# load environment variables
+local -r env_path="${1}"
 
-  status=$?
-  if [ ${status} == 0 ]; then
-    # Copy dist-packages
-    cd ${SOURCE_DIR}
-    rm -R ${TARGET_DIR}/*
-    for item in `find -name "dist-packages" -type d` ; do
-      path=${item}/$(echo "${item}" | cut -d "/" -f 2)
-      cp -r ${path} ${TARGET_DIR}
-    done
-    cd ${current_directory}
+if [ -z "$(ls ${env_path})" ]; then
+  return 0
+fi
 
-    # Load setup.bash
-    if [ -e ${SETUP_BASH_FILE} ]; then
-      source ${SETUP_BASH_FILE}
-      echo ${SETUP_BASH_FILE}
-    fi
-  fi
-}
-
-function roslaunch_from_terminator() {
-  if [ -n "${TERMINATOR_LAUNCH}" ]; then
-    array=$(echo "${TERMINATOR_LAUNCH}")
-    bash ~/catkin_ws/terminator_roslaunch.sh ${array[0]} ${array[1]}
-  fi
+echo "Load env files from "${env_path}"."
+local filepath
+for filepath in $(echo ${env_path}/*); do
+    echo "    source ${filepath}"
+    source "${filepath}"
+done
 }
