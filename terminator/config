@@ -71,7 +71,7 @@
       parent = child4
       order = 0
       profile = default
-      command = bash EXEC-TERMINATOR-CONTAINER.sh simulator emlab-tutorial-simulator em_fetch_gazebo teleop_world.launch
+      command = bash EXEC-TERMINATOR-CONTAINER.sh simulator emlab-tutorial-client em_fetch_gazebo teleop_world.launch
       uuid = 07507b8d-e2c5-4611-8b8f-4c8166dd0093
     [[[terminal6]]]
       type = Terminal
