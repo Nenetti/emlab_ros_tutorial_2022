@@ -23,11 +23,11 @@ MAINTAINER Kanechika
 # https://gitlab.com/nvidia/container-images/cuda
 # https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.3.1/ubuntu2004/devel/cudnn8/Dockerfile
 
-# Define
+# Define packages
 ARG CUDNN_VERSION=8.2.0.53
 ARG NVIDIA_CUDNN_VERSION=${CUDNN_VERSION}-1+cuda11.3
 
-# Install
+# Install cudnn8
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libcudnn8=${NVIDIA_CUDNN_VERSION} \
@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #   Setup Timezone
 #
 # ----------------------------------------------------------------------------------------------------------------------
-# Define
+# Define packages
 ARG TIMEZONE="Asia/Tokyo"
 ARG TZDATA_VERSION=*
 
@@ -62,7 +62,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # https://github.com/osrf/docker_images/blob/master/ros/noetic/debian/buster/ros-base/Dockerfile
 # https://github.com/osrf/docker_images/blob/master/ros/noetic/debian/buster/desktop-full/Dockerfile
 
-# Define
+# Define packages
 ARG DIRMNGR_VERSION=*
 ARG GNUPG2_VERSION=*
 ARG WGET_VERSION=*
@@ -113,10 +113,10 @@ RUN rosdep init && rosdep update --rosdistro ${ROS_DISTRO}
 # ----------------------------------------------------------------------------------------------------------------------
 # https://www.alsa-project.org/main/index.php/Main_Page
 
-# Define
+# Define packages
 ARG LIB_ASOUND2_PLUGINS_VERSION=*
 
-# Install
+# Install sound packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libasound2-plugins=${LIB_ASOUND2_PLUGINS_VERSION} \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -130,12 +130,12 @@ COPY ./scripts/asound.conf /etc/asound.conf
 #   Install network packages
 #
 # ----------------------------------------------------------------------------------------------------------------------
-# Define
+# Define packages
 ARG INETUTILS_PING_VERSION=*
 ARG IPROUTE2_VERSION=*
 ARG OPENSSH_CLIENT_VERSION=*
 
-# Install
+# Install network packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     inetutils-ping=${INETUTILS_PING_VERSION} \
     iproute2=${IPROUTE2_VERSION} \
@@ -150,11 +150,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # http://wiki.ros.org/Robots/fetch
 # http://docs.fetchrobotics.com/
 #
-# Define
+# Define packages
 ARG ROS_FETCH_DESCRIPTION_VERSION=*
 ARG ROS_ROBOT_CONTROLLERS_VERSION=*
 
-# Install
+# Install fetch packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-noetic-fetch-description=${ROS_FETCH_DESCRIPTION_VERSION} \
     ros-noetic-robot-controllers=${ROS_ROBOT_CONTROLLERS_VERSION} \
@@ -165,20 +165,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #   Install Python3
 #
 # ----------------------------------------------------------------------------------------------------------------------
-# Define
+# Define packages
 ARG PYTHON3_DEV_VERSION=3.8.2-0ubuntu2
 ARG PYTHON3_PIP_VERSION=*
 
-# Install
+# Install python3
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-dev=${PYTHON3_DEV_VERSION} \
     python3-pip=${PYTHON3_PIP_VERSION} \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m pip install --upgrade pip
-
 COPY ./scripts/requirements.txt /usr/local/bin/requirements.txt
-RUN pip install -r /usr/local/bin/requirements.txt
+RUN python3 -m pip install --upgrade pip  \
+    && pip install --no-cache-dir -r /usr/local/bin/requirements.txt
 
 # ----------------------------------------------------------------------------------------------------------------------
 #
@@ -187,11 +186,11 @@ RUN pip install -r /usr/local/bin/requirements.txt
 # ----------------------------------------------------------------------------------------------------------------------
 # http://wiki.ros.org/ros_numpy
 #
-# Define
+# Define packages
 ARG ROS_NUMPY_VERSION=*
 ARG PYTHON3_TK_VERSION=*
 
-# Install
+# Install packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
   ros-noetic-ros-numpy=${ROS_NUMPY_VERSION} \
   python3-tk=${PYTHON3_TK_VERSION} \
@@ -202,10 +201,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #   User Setup
 #
 # ----------------------------------------------------------------------------------------------------------------------
-# Define
+# Define packages
 ARG SUDO_VERSION=*
 
-# Install
+# Install sudo
 RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo=${SUDO_VERSION} \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -251,8 +250,6 @@ RUN mkdir -p ${DEFAULT_USER_HOME}/catkin_ws \
 
 # Add python symbolic link
 RUN ln -s /usr/bin/python3 /usr/bin/python
-
-#RUN echo "source /opt/ros/noetic/setup.bash" >> "/root/.bashrc"
 
 # Enter the container with a Bash shell.
 CMD ["/bin/bash"]

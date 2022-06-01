@@ -10,14 +10,10 @@ Emergent Systems Laboratory ROS1 Tutorial 2022
 
 # Overview <a id="Overview"></a>
 
-The `rviz_gaussian_distribution` package provides visualization of 2D Gaussian Distributions on Rviz.
-
 **Content:**
 
 * [Overview](#Overview)
-* [Setup](#Setup)
-* [Example](#Example)
-* [Nodes](#Nodes)
+* [Getting Started](#Setup)
 
 <!--
 # ----------------------------------------------------------------------------------------------------------------------
@@ -26,10 +22,29 @@ The `rviz_gaussian_distribution` package provides visualization of 2D Gaussian D
 #
 # ----------------------------------------------------------------------------------------------------------------------
 --->
-## Setup <a id="Setup"></a>
-Set up the development environment.
+# Getting Started <a id="Setup"></a>
 
-1. Setup the development environment: [docs/setup.md](docs/getting_started.md).
+Getting Started: [docs/setup.md](docs/getting_started.md).
+
+ビルドの要約
+(詳細は上記 `docs/getting_started.md`を参照)
+```
+sudo apt-get update && sudo apt-get install -y git 
+git clone https://github.com/Nenetti/emlab_ros_tutorial_2022.git
+cd emlab_ros_tutorial_2022
+bash ./SETUP-DEVELOPMENT-ENVIRONMENT.sh
+bash ./BUILD-DOCKER-IMAGE.sh
+```
+
+Digest of run command
+```
+bash ./RUN-DOCKER-CONTAINER.sh
+```
+
+2. Enter the docker container.
+```
+bash ./BUILD-DOCKER-IMAGE.sh
+```
 
 
 <!--

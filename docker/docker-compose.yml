@@ -1,84 +1,20 @@
 version: "3.4"
 
-# ----------------------------------------------------------------------------------------------------------------------
-#   General Template
-# ----------------------------------------------------------------------------------------------------------------------
-x-common_template: &common_template
-  hostname: ${HOSTNAME}
-  network_mode: host
-  privileged: true
-  tty: true
-  ipc: host
-
-# ----------------------------------------------------------------------------------------------------------------------
-#   Image Template
-# ----------------------------------------------------------------------------------------------------------------------
-x-image_template: &image_template
-  image: emlab/tutorial/fetch:noetic
-  build:
-    context: ./
-    dockerfile: Dockerfile
-
-# ----------------------------------------------------------------------------------------------------------------------
-#   Volume Template
-# ----------------------------------------------------------------------------------------------------------------------
-x-volumes_template:
-  # Grant display access to X Server.
-  - &volume_x11 "/tmp/.X11-unix:/tmp/.X11-unix"
-  # Grant audio access to PulseAudio.
-  - &volume_xdg "${XDG_RUNTIME_DIR}/gdm/Xauthority:${XDG_RUNTIME_DIR}/gdm/Xauthority"
-
-# ----------------------------------------------------------------------------------------------------------------------
-#   Environment Variable Template
-# ----------------------------------------------------------------------------------------------------------------------
-x-environment_template: &environment_template
-  # Display X Server GUIs.
-  DISPLAY: ${DISPLAY}
-  QT_X11_NO_MITSHM: 1
-  # ID.
-  HOST_UID: ${HOST_UID}
-  HOST_GID: ${HOST_GID}
-
-# ----------------------------------------------------------------------------------------------------------------------
-#   GPU Template
-# ----------------------------------------------------------------------------------------------------------------------
-x-gpu_template: &gpu_template
-  deploy:
-    resources:
-      reservations:
-        devices:
-          - driver: nvidia
-            count: all
-            capabilities: [ gpu ]
-
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#   Service
-#
-# ----------------------------------------------------------------------------------------------------------------------
 services:
-  simulator:
-    <<: *common_template
-    <<: *image_template
-    container_name: emlab-tutorial-simulator
-    volumes:
-      - *volume_x11
-      - *volume_xdg
-      - type: bind
-        source: ../catkin_ws/simulator/src
-        target: /home/docker/catkin_ws/src
-    environment:
-      <<: *environment_template
-      USER_NAME: ${SIMULATOR_USER_NAME}
-    <<: *gpu_template
-
   app:
-    <<: *common_template
-    <<: *image_template
+    hostname: ${HOSTNAME}
+    image: emlab/tutorial/fetch:noetic
+    build:
+      context: ./
+      dockerfile: Dockerfile
     container_name: emlab-tutorial-client
     volumes:
-      - *volume_x11
-      - *volume_xdg
+      - type: bind
+        source: "/tmp/.X11-unix"
+        target: "/tmp/.X11-unix"
+      - type: bind
+        source: "${XDG_RUNTIME_DIR}/gdm/Xauthority"
+        target: "${XDG_RUNTIME_DIR}/gdm/Xauthority"
       # Init environement variables
       - type: bind
         source: ../catkin_ws/app/src
@@ -90,10 +26,23 @@ services:
         source: ./env/ros_env.sh
         target: /home/docker/env/ros_env.sh
     environment:
-      <<: *environment_template
-      # PulseAudio.
-      PULSE_SERVER: unix:${XDG_RUNTIME_DIR}/pulse/native
-#      PYTHONPATH: '/opt/ros/noetic/lib/python3/dist-packages:${PYTHONPATH}'
+      # Display X Server GUIs.
+      DISPLAY: ${DISPLAY}
+      QT_X11_NO_MITSHM: 1
       # ID.
       USER_NAME: ${APP_USER_NAME}
-    <<: *gpu_template
+      HOST_UID: ${HOST_UID}
+      HOST_GID: ${HOST_GID}
+      # PulseAudio.
+      PULSE_SERVER: unix:${XDG_RUNTIME_DIR}/pulse/native
+    network_mode: host
+    privileged: true
+    tty: true
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
