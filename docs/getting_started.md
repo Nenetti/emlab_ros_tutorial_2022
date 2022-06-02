@@ -54,8 +54,6 @@ REPOSITORY              TAG       IMAGE ID       CREATED          SIZE
 emlab/tutorial/fetch    noetic    a378cbe7a2f8   XX minutes ago   15GB
 ```
 
-
-
 <!--
 # ----------------------------------------------------------------------------------------------------------------------
 #
@@ -66,13 +64,13 @@ emlab/tutorial/fetch    noetic    a378cbe7a2f8   XX minutes ago   15GB
 ## コンテナ起動 <a id="Setup"></a>
 
 1. コンテナ起動
-コマンドは以下のどれでも同じ結果になる．(カレントディレクトリは`emlab_ros_tutorial_2022`とする)
+   
+(docker runでも起動可能だが，環境変数やボリュームのマウントの設定が非常に長くなるため非推奨)
 ```
 bash ./RUN-DOCKER-CONTAINER.sh
 ```
 
 2. コンテナにアクセス
-コマンドは以下のどれでも同じ結果になる．(カレントディレクトリは`emlab_ros_tutorial_2022`とする)
 ```
-bash ./RUN-DOCKER-CONTAINER.sh
+docker exec -it -u app emlab-tutorial-client bash
 ```

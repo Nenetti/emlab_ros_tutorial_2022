@@ -24,7 +24,7 @@ Emergent Systems Laboratory ROS1 Tutorial 2022
 --->
 # Getting Started <a id="Setup"></a>
 
-Getting Started: [docs/setup.md](docs/getting_started.md).
+Getting Started: [docs/getting_started.md](docs/getting_started.md).
 
 ビルドの要約
 (詳細は上記 `docs/getting_started.md`を参照)
