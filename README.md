@@ -36,16 +36,11 @@ bash ./SETUP-DEVELOPMENT-ENVIRONMENT.sh
 bash ./BUILD-DOCKER-IMAGE.sh
 ```
 
-Digest of run command
+Docker起動コマンド要約
 ```
 bash ./RUN-DOCKER-CONTAINER.sh
+docker exec -it -u app emlab-tutorial-client bash
 ```
-
-2. Enter the docker container.
-```
-bash ./BUILD-DOCKER-IMAGE.sh
-```
-
 
 <!--
 # ----------------------------------------------------------------------------------------------------------------------
