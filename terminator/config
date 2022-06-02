@@ -71,15 +71,15 @@
       parent = child4
       order = 0
       profile = default
-      command = bash EXEC-TERMINATOR-CONTAINER.sh simulator emlab-tutorial-client em_fetch_gazebo teleop_world.launch
+      command = bash EXEC-DOCKER-CONTAINER.sh simulator emlab-tutorial-simulator bash
       uuid = 07507b8d-e2c5-4611-8b8f-4c8166dd0093
     [[[terminal6]]]
       type = Terminal
       parent = child4
       order = 1
       profile = default
+      command = bash EXEC-DOCKER-CONTAINER.sh simulator emlab-tutorial-simulator bash
       uuid = 5ed2bc00-ead2-4e1d-97a7-cfbefb1a5052
-      command = ""
     [[[child7]]]
       type = VPaned
       parent = child1
@@ -97,12 +97,14 @@
       parent = child8
       order = 0
       profile = default
+      command = bash EXEC-DOCKER-CONTAINER.sh app emlab-tutorial-client bash
       uuid = 668cf2fa-baa5-4fd6-a538-cca1d11fad1e
     [[[terminal10]]]
       type = Terminal
       parent = child8
       order = 1
       profile = default
+      command = bash EXEC-DOCKER-CONTAINER.sh app emlab-tutorial-client bash
       uuid = 2f8549a3-79fe-4b87-9d9f-c3a47eeec98a
     [[[child11]]]
       type = HPaned
@@ -115,11 +117,13 @@
       parent = child11
       order = 0
       profile = default
+      command = bash EXEC-DOCKER-CONTAINER.sh app emlab-tutorial-client bash
       uuid = 11915a17-9710-4e16-b2bf-4ee5fdc0fe18
     [[[terminal13]]]
       type = Terminal
       parent = child11
       order = 1
       profile = default
+      command = bash EXEC-DOCKER-CONTAINER.sh app emlab-tutorial-client bash
       uuid = 4a635fb3-befb-44a0-91f8-a19e091b237e
 [plugins]

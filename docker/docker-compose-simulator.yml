@@ -67,6 +67,9 @@ services:
       - type: bind
         source: ../catkin_ws/simulator/src
         target: /home/docker/catkin_ws/src
+      - type: bind
+        source: ./env/ros_env.sh
+        target: /home/docker/env/ros_env.sh
     environment:
       <<: *environment_template
       USER_NAME: ${SIMULATOR_USER_NAME}

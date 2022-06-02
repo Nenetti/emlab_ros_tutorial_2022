@@ -15,7 +15,7 @@ readonly APP_CONTAINER="emlab-tutorial-client"
 readonly SIMULATION_CONTAINER="emlab-tutorial-simulator"
 readonly N_SERVICE=1
 readonly LOCK_FILE="/tmp/catkin.lock"
-readonly COMPOSE_FILE="./docker/docker-compose.yml"
+readonly COMPOSE_FILE="./docker/docker-compose-simulator.yml"
 readonly PIPE=/tmp/entrypoint_monitoring.pipe
 
 # initial completed word of entrypoint

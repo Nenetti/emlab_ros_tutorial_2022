@@ -188,13 +188,15 @@ RUN python3 -m pip install --upgrade pip  \
 #
 # Define packages
 ARG ROS_NUMPY_VERSION=*
+ARG ROS_RGBD_LAUNCH=*
 ARG PYTHON3_TK_VERSION=*
 
 # Install packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  ros-noetic-ros-numpy=${ROS_NUMPY_VERSION} \
-  python3-tk=${PYTHON3_TK_VERSION} \
-  && rm -rf /var/lib/apt/lists/*
+    ros-noetic-ros-numpy=${ROS_NUMPY_VERSION} \
+    ros-noetic-rgbd-launch=${ROS_RGBD_LAUNCH} \
+    python3-tk=${PYTHON3_TK_VERSION} \
+    && rm -rf /var/lib/apt/lists/*
 
 # ----------------------------------------------------------------------------------------------------------------------
 #

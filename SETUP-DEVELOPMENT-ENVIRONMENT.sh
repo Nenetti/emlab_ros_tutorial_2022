@@ -27,7 +27,7 @@ sudo rm /usr/share/keyrings/docker-archive-keyring.gpg
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 sudo echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 
 sudo apt-get update && sudo apt-get install -y --no-install-recommends \
   docker-ce=${DOCKER_VERSION} \
@@ -54,10 +54,13 @@ sudo chmod +x /usr/local/bin/docker-compose
 # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker
 
 sudo rm /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
-      && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-      && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
-            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+distribution=$(
+               . /etc/os-release
+                                 echo $ID$VERSION_ID
+)     &&
+         curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg &&
+         curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list |
+            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' |
             sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 
 sudo apt-get update && sudo apt-get install -y --no-install-recommends \
@@ -65,3 +68,10 @@ sudo apt-get update && sudo apt-get install -y --no-install-recommends \
 
 sudo apt-get update && sudo apt-get install -y --no-install-recommends \
   terminator
+
+# ----------------------------------------------------------------------------------------------------------------------
+#
+#   Git submodules
+#
+# ----------------------------------------------------------------------------------------------------------------------
+git submodule update --init
