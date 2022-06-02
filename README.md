@@ -39,7 +39,7 @@ bash ./BUILD-DOCKER-IMAGE.sh
 Docker起動コマンド要約
 ```
 bash ./RUN-DOCKER-CONTAINER.sh
-docker exec -it -u app emlab-tutorial-client bash
+docker exec -it -u simulator emlab-tutorial-simulator bash
 ```
 
 <!--
@@ -52,10 +52,12 @@ docker exec -it -u app emlab-tutorial-client bash
 
 ## Example <a id="Example"></a>
 
-Start example.
+roslaunch command in `emlab-tutorial-simulator` container
+```
+roslaunch em_fetch_gazebo teleop_world.launch 
+```
 
-    roslaunch rviz_gaussian_distribution example.launch
-
-Start the server.
-
-    roslaunch rviz_gaussian_distribution server.launch
+in local
+```
+bash RUN-TERMINATOR.sh 
+```
