@@ -22,6 +22,6 @@ fi
 roslaunch_from_terminator
 
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
-PYTHONDONTWRITEBYTECODE=1
+export PYTHONDONTWRITEBYTECODE=1
 
 cd ${HOME}/catkin_ws
