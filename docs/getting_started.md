@@ -32,23 +32,13 @@ bash ./SETUP-DEVELOPMENT-ENVIRONMENT.sh
 ```
 
 5. Dockerイメージを`./docker/Dockerfile`からビルド.
-
-コマンドは以下のどれでも同じ結果になる．(カレントディレクトリは`emlab_ros_tutorial_2022`とする)
 ```
-1. docker-compose -f ./docker/docker-compose.yml build
-2. docker build ./docker -t emlab/tutorial/fetch:noetic
-2. docker build ./docker -f ./docker/Dockerfile -t emlab/tutorial/fetch:noetic
-
-4. cd ./docker && docker-compose build
-5. cd ./docker && docker build ./ -t emlab/tutorial/fetch:noetic
-6. cd ./docker && docker build ./ -f Dockerfile -t emlab/tutorial/fetch:noetic
-
-7. bash ./BUILD-DOCKER-IMAGE.sh
+bash ./BUILD-DOCKER-IMAGE.sh
 ```
 
-エラーなくビルド出来ていれば`docker ps -a`コマンドで以下の出力が得られる．
+エラーなくビルド出来ていれば`docker images`コマンドで以下の出力が得られる．
 ```
-docker ps -a
+docker images
 
 REPOSITORY              TAG       IMAGE ID       CREATED          SIZE
 emlab/tutorial/fetch    noetic    a378cbe7a2f8   XX minutes ago   15GB
@@ -64,13 +54,11 @@ emlab/tutorial/fetch    noetic    a378cbe7a2f8   XX minutes ago   15GB
 ## コンテナ起動 <a id="Setup"></a>
 
 1. コンテナ起動
-   
-(docker runでも起動可能だが，環境変数やボリュームのマウントの設定が非常に長くなるため非推奨)
 ```
 bash ./RUN-DOCKER-CONTAINER.sh
 ```
 
 2. コンテナにアクセス
 ```
-docker exec -it -u app emlab-tutorial-client bash
+bash ./RUN-TERMINATOR.sh
 ```
