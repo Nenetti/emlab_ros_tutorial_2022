@@ -58,7 +58,14 @@ emlab/tutorial/fetch    noetic    a378cbe7a2f8   XX minutes ago   15GB
 bash ./RUN-DOCKER-CONTAINER.sh
 ```
 
-2. コンテナにアクセス
+2. コンテナが立ち上がっていれば，`docker ps -a`コマンドで以下の出力が得られる．
+```
+CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS    PORTS     NAMES
+xxxxxxxxxxxx   fetch:noetic   "/usr/local/bin/entr…"   7 minutes ago   Created             fetch-client
+yyyyyyyyyyyy   fetch:noetic   "/usr/local/bin/entr…"   7 minutes ago   Created             fetch-simulator
+```
+
+3. コンテナにアクセス
 ```
 bash ./RUN-TERMINATOR.sh
 ```
