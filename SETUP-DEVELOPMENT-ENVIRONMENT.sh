@@ -43,7 +43,7 @@ sudo apt-get update && sudo apt-get install -y --no-install-recommends \
 # https://github.com/docker/compose/releases
 DOCKER_COMPOSE_VERSION="v2.4.1"
 
-sudo curl -s -L https://github.com/docker/compose/releases/download/"${DOCKER_COMPOSE_VERSION}"/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+sudo curl -L https://github.com/docker/compose/releases/download/"${DOCKER_COMPOSE_VERSION}"/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -54,13 +54,10 @@ sudo chmod +x /usr/local/bin/docker-compose
 # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker
 
 sudo rm /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
-distribution=$(
-               . /etc/os-release
-                                 echo $ID$VERSION_ID
-)     &&
-         curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg &&
-         curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list |
-            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' |
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+         && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+         && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
             sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 
 sudo apt-get update && sudo apt-get install -y --no-install-recommends \
