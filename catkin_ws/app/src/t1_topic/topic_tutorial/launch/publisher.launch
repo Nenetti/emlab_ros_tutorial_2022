@@ -1,0 +1,12 @@
+<launch>
+
+    <arg name="hz" default="10"/>
+    <arg name="remap_topic_name" default="remapped_tutorial_string_topic"/>
+
+    <node pkg="topic_tutorial" type="publisher.py" name="launch_tutorial_publisher" output="screen">
+        <param name="hz" type="double" value="$(arg hz)"/>
+
+        <remap from="/tutorial_string_topic" to="$(arg remap_topic_name)"/>
+    </node>
+
+</launch>
