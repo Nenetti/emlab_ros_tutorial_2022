@@ -1,16 +1,15 @@
 <launch>
 
-    <arg name="hz" default="10"/>
+    <arg name="hz" default="1"/>
     <arg name="remap_topic_name" default="remapped_tutorial_string_topic"/>
 
-    <node pkg="topic_tutorial" type="publisher.py" name="launch_tutorial_publisher" output="screen">
-        <param name="hz" type="double" value="$(arg hz)"/>
+    <include file="$(find topic_tutorial)/launch/publisher.launch">
+      <arg name="hz" value="$(arg hz)" />
+      <arg name="remap_topic_name" value="$(arg remap_topic_name)" />
+    </include>
 
-        <remap from="/tutorial_string_topic" to="$(arg remap_topic_name)"/>
-    </node>
-
-    <node pkg="topic_tutorial" type="subscriber.py" name="launch_tutorial_subscriber" output="screen">
-        <remap from="/tutorial_string_topic" to="$(arg remap_topic_name)"/>
-    </node>
+    <include file="$(find topic_tutorial)/launch/subscriber.launch">
+      <arg name="remap_topic_name" value="$(arg remap_topic_name)" />
+    </include>
 
 </launch>
