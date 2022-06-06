@@ -39,7 +39,7 @@ bash ./BUILD-DOCKER-IMAGE.sh
 Docker起動コマンド要約
 ```
 bash ./RUN-DOCKER-CONTAINER.sh
-docker exec -it -u simulator emlab-tutorial-simulator bash
+docker exec -it -u app emlab-tutorial-client bash
 ```
 
 <!--
