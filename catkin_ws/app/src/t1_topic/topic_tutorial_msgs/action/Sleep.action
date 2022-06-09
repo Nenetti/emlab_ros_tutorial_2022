@@ -1,0 +1,10 @@
+# Define the goal
+std_msgs/Float32 time
+
+---
+# Define the result
+std_msgs/String text
+
+---
+# Define a feedback message
+std_msgs/Float32 progress
