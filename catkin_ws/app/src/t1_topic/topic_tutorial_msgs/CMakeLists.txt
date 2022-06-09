@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(topic_tutorial_msgs)
+
 find_package(catkin REQUIRED
   COMPONENTS
     std_msgs
     sensor_msgs
     actionlib_msgs
+    message_generation
 )
 
 ## Generate messages in the 'msg' folder
