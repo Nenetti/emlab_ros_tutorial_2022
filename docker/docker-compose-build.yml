@@ -1,19 +1,15 @@
-#!/bin/bash
+version: "3.4"
 
 # ----------------------------------------------------------------------------------------------------------------------
 #
-#   Main
+#   Service
 #
 # ----------------------------------------------------------------------------------------------------------------------
-cd $(dirname "$0")
-
-bash ./RUN-DOCKER-CONTAINER.sh
-STATUS=$?
-
-if [ ${STATUS} != 0 ]; then
-  exit ${STATUS}
-fi
-
-terminator -g ./terminator/config -l default
-
-#bash ./shells/STOP-SIMULATION-CONTAINER.sh
+services:
+  builder:
+    image: emlab/tutorial/fetch:noetic
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - IMAGE_NAME=nvidia/cudagl:11.3.1-devel-ubuntu20.04

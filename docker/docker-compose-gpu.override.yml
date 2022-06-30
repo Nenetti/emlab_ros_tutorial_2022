@@ -1,19 +1,16 @@
-#!/bin/bash
+version: "3.4"
 
 # ----------------------------------------------------------------------------------------------------------------------
 #
-#   Main
+#   Service
 #
 # ----------------------------------------------------------------------------------------------------------------------
-cd $(dirname "$0")
-
-bash ./RUN-DOCKER-CONTAINER.sh
-STATUS=$?
-
-if [ ${STATUS} != 0 ]; then
-  exit ${STATUS}
-fi
-
-terminator -g ./terminator/config -l default
-
-#bash ./shells/STOP-SIMULATION-CONTAINER.sh
+services:
+  app:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]

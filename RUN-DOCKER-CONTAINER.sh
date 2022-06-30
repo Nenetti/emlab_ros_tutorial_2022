@@ -5,32 +5,28 @@
 #   Setup Variable
 #
 # ----------------------------------------------------------------------------------------------------------------------
+cd $(dirname "$0")
+
 export HOST_UID="$(id -u)"
 export HOST_GID="$(id -g)"
-export APP_USER_NAME="app"
-export SIMULATOR_USER_NAME="simulator"
-#export APP_USER_NAME=${USER}
 
-readonly APP_CONTAINER="emlab-tutorial-client"
-readonly SIMULATION_CONTAINER="emlab-tutorial-simulator"
-readonly N_SERVICE=1
+compose_file_relative_path="./docker/docker-compose.yml"
+override_gpu_file_relative_path="./docker/docker-compose-gpu.override.yml"
+
+export COMPOSE_FILE=$(cd $(dirname "${compose_file_relative_path}") && pwd)/$(basename "${compose_file_relative_path}")
+override_gpu_file=$(cd $(dirname "${override_gpu_file_relative_path}") && pwd)/$(basename "${override_gpu_file_relative_path}")
+
+if [ -e /proc/driver/nvidia/version ]; then
+  COMPOSE_FILE="${COMPOSE_FILE}:${override_gpu_file}"
+fi
+
+container_name="emlab-tutorial-client"
+
 readonly LOCK_FILE="/tmp/catkin.lock"
-readonly COMPOSE_FILE="./docker/docker-compose-simulator.yml"
 readonly PIPE=/tmp/entrypoint_monitoring.pipe
 
 # initial completed word of entrypoint
 readonly COMPLETE_WORD="Complete initialization of entrypoint"
-
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#   [Function] Run container
-#
-# ----------------------------------------------------------------------------------------------------------------------
-function docker_compose_up() {
-  # docker-compose up
-  docker-compose -f "${COMPOSE_FILE}" up -d
-  return $?
-}
 
 # ----------------------------------------------------------------------------------------------------------------------
 #
@@ -43,17 +39,14 @@ function wait_for_entrypoint() {
   fi
   mkfifo ${PIPE}
 
-  docker-compose -f "${COMPOSE_FILE}" logs -f --since 0s | tee ${PIPE} >/dev/null &
-  PID=$!
+  docker-compose logs -f --since 0s | tee ${PIPE} >/dev/null &
+  local PID=$!
 
   local count=0
   local line
   cat ${PIPE} | while read line; do
     echo ${line}
     if [[ ${line} =~ ${COMPLETE_WORD} ]]; then
-      count=$((count + 1))
-    fi
-    if [[ ${count} == ${N_SERVICE} ]]; then
       kill $PID
       break
     fi
@@ -67,9 +60,28 @@ function wait_for_entrypoint() {
 #   [Function] catkin build with docker run
 #
 # ----------------------------------------------------------------------------------------------------------------------
-function catkin_build() {
-  docker exec -it -u ${APP_USER_NAME} ${APP_CONTAINER} /bin/bash -i -c "source /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin build"
-  docker exec -it -u ${SIMULATOR_USER_NAME} ${SIMULATION_CONTAINER} /bin/bash -i -c "source /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin build"
+function catkin_build_in_container() {
+  local user_name=$1
+  local container_name=$2
+  docker exec -it -u ${user_name} ${container_name} /bin/bash -i -c "cd ~/catkin_ws; catkin build"
+  if [ $? != 0 ]; then
+    exit_command "Failed to catkin build in ${container_name}"
+  fi
+}
+
+# ----------------------------------------------------------------------------------------------------------------------
+#
+#   [Function] exit process
+#
+# ----------------------------------------------------------------------------------------------------------------------
+function exit_command() {
+  local error_text=$1
+  docker-compose stop
+  if [ -e ${LOCK_FILE} ]; then
+    rm ${LOCK_FILE}
+  fi
+  echo "${error_text}"
+  exit 1
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -77,39 +89,37 @@ function catkin_build() {
 #   Main
 #
 # ----------------------------------------------------------------------------------------------------------------------
-cd $(dirname "$0")
-
 # If container does not up.
-if [ "$(docker inspect --format="{{.State.Status}}" ${APP_CONTAINER})" != "running" ]; then
+if [ "$(docker inspect --format="{{.State.Status}}" ${container_name})" != "running" ]; then
+  trap "exit_command 'CTRL+C Interrupted' " SIGINT
+
   # Generate lock file
   if [ ! -e ${LOCK_FILE} ]; then
     touch ${LOCK_FILE}
   fi
 
   # docker-compose up -d
-  docker_compose_up
+  docker-compose up -d
+
   if [ $? != 0 ]; then
-    # Failed to run container
-    rm ${LOCK_FILE}
-    exit 1
+    exit_command "Failed docker-compose up"
   fi
 
   # Wait to complete the entrypoint with all containers.
   wait_for_entrypoint
-  catkin_build
+
+  catkin_build_in_container docker ${container_name}
 
   rm ${LOCK_FILE}
-  exit 0
-fi
 
-# if container already upped.
-if [ ! -e ${LOCK_FILE} ]; then
+elif [ ! -e ${LOCK_FILE} ]; then
+  # if container already upped.
   echo "Containers are already activated."
-  exit 0
-fi
 
-# running entrypoint.
-echo "Wait for docker-compose up ..."
-while [ -e ${LOCK_FILE} ]; do
-  sleep 0.1
-done
+else
+  # running entrypoint.
+  echo "Wait for docker-compose up ..."
+  while [ -e ${LOCK_FILE} ]; do
+    sleep 0.1
+  done
+fi

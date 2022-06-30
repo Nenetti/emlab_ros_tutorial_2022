@@ -16,28 +16,10 @@
       type = Window
       parent = ""
       order = 0
-      position = 2034:77
-      maximised = False
-      fullscreen = False
-      size = 654, 427
-      title = ~
-      last_active_term = 5f772f80-281d-4766-a1f3-d54ca86f5bb5
-      last_active_window = True
-    [[[terminal1]]]
-      type = Terminal
-      parent = child0
-      order = 0
-      profile = default
-      uuid = 5f772f80-281d-4766-a1f3-d54ca86f5bb5
-  [[emlab]]
-    [[[child0]]]
-      type = Window
-      parent = ""
-      order = 0
-      position = 1432:27
+      position = 1984:27
       maximised = True
       fullscreen = False
-      size = 2488, 1376
+      size = 1856, 1016
       title = ~
       last_active_term = 07507b8d-e2c5-4611-8b8f-4c8166dd0093
       last_active_window = True
@@ -71,14 +53,14 @@
       parent = child4
       order = 0
       profile = default
-      command = bash EXEC-DOCKER-CONTAINER.sh simulator emlab-tutorial-simulator bash
+      command = bash shells/EXEC-DOCKER-CONTAINER.sh emlab-tutorial-client bash
       uuid = 07507b8d-e2c5-4611-8b8f-4c8166dd0093
     [[[terminal6]]]
       type = Terminal
       parent = child4
       order = 1
       profile = default
-      command = bash EXEC-DOCKER-CONTAINER.sh simulator emlab-tutorial-simulator bash
+      command = bash shells/EXEC-DOCKER-CONTAINER.sh emlab-tutorial-client bash
       uuid = 5ed2bc00-ead2-4e1d-97a7-cfbefb1a5052
     [[[child7]]]
       type = VPaned
@@ -97,14 +79,14 @@
       parent = child8
       order = 0
       profile = default
-      command = bash EXEC-DOCKER-CONTAINER.sh app emlab-tutorial-client bash
+      command = bash shells/EXEC-DOCKER-CONTAINER.sh emlab-tutorial-client bash
       uuid = 668cf2fa-baa5-4fd6-a538-cca1d11fad1e
     [[[terminal10]]]
       type = Terminal
       parent = child8
       order = 1
       profile = default
-      command = bash EXEC-DOCKER-CONTAINER.sh app emlab-tutorial-client bash
+      command = bash shells/EXEC-DOCKER-CONTAINER.sh emlab-tutorial-client bash
       uuid = 2f8549a3-79fe-4b87-9d9f-c3a47eeec98a
     [[[child11]]]
       type = HPaned
@@ -117,13 +99,13 @@
       parent = child11
       order = 0
       profile = default
-      command = bash EXEC-DOCKER-CONTAINER.sh app emlab-tutorial-client bash
+      command = bash shells/EXEC-DOCKER-CONTAINER.sh emlab-tutorial-client bash
       uuid = 11915a17-9710-4e16-b2bf-4ee5fdc0fe18
     [[[terminal13]]]
       type = Terminal
       parent = child11
       order = 1
       profile = default
-      command = bash EXEC-DOCKER-CONTAINER.sh app emlab-tutorial-client bash
+      command = bash shells/EXEC-DOCKER-CONTAINER.sh emlab-tutorial-client bash
       uuid = 4a635fb3-befb-44a0-91f8-a19e091b237e
 [plugins]

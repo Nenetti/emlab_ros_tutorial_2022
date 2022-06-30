@@ -5,7 +5,8 @@
 #   Initialize Ubuntu Focal Fossa (20.04 LTS) OpenGL support.
 #
 # ----------------------------------------------------------------------------------------------------------------------
-FROM nvidia/cudagl:11.3.1-devel-ubuntu20.04
+ARG IMAGE_NAME
+FROM ${IMAGE_NAME}
 MAINTAINER Kanechika
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -127,23 +128,6 @@ COPY ./scripts/asound.conf /etc/asound.conf
 
 # ----------------------------------------------------------------------------------------------------------------------
 #
-#   Install network packages
-#
-# ----------------------------------------------------------------------------------------------------------------------
-# Define packages
-ARG INETUTILS_PING_VERSION=*
-ARG IPROUTE2_VERSION=*
-ARG OPENSSH_CLIENT_VERSION=*
-
-# Install network packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    inetutils-ping=${INETUTILS_PING_VERSION} \
-    iproute2=${IPROUTE2_VERSION} \
-    openssh-client=${OPENSSH_CLIENT_VERSION} \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# ----------------------------------------------------------------------------------------------------------------------
-#
 #   Install ROS Fetch
 #
 # ----------------------------------------------------------------------------------------------------------------------
@@ -151,13 +135,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # http://docs.fetchrobotics.com/
 #
 # Define packages
-ARG ROS_FETCH_DESCRIPTION_VERSION=*
-ARG ROS_ROBOT_CONTROLLERS_VERSION=*
+ARG ROS_FETCH_ROS_VERSION=*
 
 # Install fetch packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ros-noetic-fetch-description=${ROS_FETCH_DESCRIPTION_VERSION} \
-    ros-noetic-robot-controllers=${ROS_ROBOT_CONTROLLERS_VERSION} \
+    ros-noetic-fetch-ros=${ROS_FETCH_ROS_VERSION} \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -165,13 +147,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #   Install Python3
 #
 # ----------------------------------------------------------------------------------------------------------------------
-# Define packages
-ARG PYTHON3_DEV_VERSION=3.8.2-0ubuntu2
+# Define versions.
 ARG PYTHON3_PIP_VERSION=*
 
 # Install python3
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3-dev=${PYTHON3_DEV_VERSION} \
     python3-pip=${PYTHON3_PIP_VERSION} \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -187,13 +167,13 @@ RUN python3 -m pip install --upgrade pip  \
 # http://wiki.ros.org/ros_numpy
 #
 # Define packages
-ARG ROS_NUMPY_VERSION=*
+ARG ROS_ROBOT_CONTROLLERS_VERSION=*
 ARG ROS_RGBD_LAUNCH=*
 ARG PYTHON3_TK_VERSION=*
 
 # Install packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ros-noetic-ros-numpy=${ROS_NUMPY_VERSION} \
+    ros-noetic-robot-controllers=${ROS_ROBOT_CONTROLLERS_VERSION} \
     ros-noetic-rgbd-launch=${ROS_RGBD_LAUNCH} \
     python3-tk=${PYTHON3_TK_VERSION} \
     && rm -rf /var/lib/apt/lists/*
@@ -203,7 +183,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #   User Setup
 #
 # ----------------------------------------------------------------------------------------------------------------------
-# Define packages
+# Define versions.
 ARG SUDO_VERSION=*
 
 # Install sudo
@@ -232,26 +212,21 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 #   etc
 #
 # ----------------------------------------------------------------------------------------------------------------------
-# Add .bashrc.
-ARG ADDITIONAL_ENV_PATH="${DEFAULT_USER_HOME}/env"
-RUN mkdir -p "${ADDITIONAL_ENV_PATH}" \
-    && chown -R $(id -u ${DEFAULT_USER}):$(id -g ${DEFAULT_USER}) "${ADDITIONAL_ENV_PATH}" \
-    && echo "load_env ${ADDITIONAL_ENV_PATH}" >> "${DEFAULT_USER_HOME}/.bashrc"
-
 # Force color prompt in terminal.
 RUN sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' "${DEFAULT_USER_HOME}/.bashrc"
 
 # Add .bash_aliases.
-COPY "./scripts/.bash_aliases" "${DEFAULT_USER_HOME}/.bash_aliases"
-RUN chown -R $(id -u ${DEFAULT_USER}):$(id -g ${DEFAULT_USER}) "${DEFAULT_USER_HOME}/.bash_aliases" \
-    && chmod 755 ${DEFAULT_USER_HOME}/.bash_aliases
+COPY "./scripts/ros_env.sh" "${DEFAULT_USER_HOME}/ros_env.sh"
+RUN chown "$(id -u ${DEFAULT_USER}):$(id -g ${DEFAULT_USER})" "${DEFAULT_USER_HOME}/ros_env.sh" \
+    && chmod 755 "${DEFAULT_USER_HOME}/ros_env.sh"
+RUN echo "source ${DEFAULT_USER_HOME}/ros_env.sh" >> "${DEFAULT_USER_HOME}/.bashrc"
 
 # Make catkin_ws directory.
-RUN mkdir -p ${DEFAULT_USER_HOME}/catkin_ws \
-    && chown -R $(id -u ${DEFAULT_USER}):$(id -g ${DEFAULT_USER}) ${DEFAULT_USER_HOME}/catkin_ws
+RUN mkdir -p "${DEFAULT_USER_HOME}/catkin_ws" \
+    && chown "$(id -u ${DEFAULT_USER}):$(id -g ${DEFAULT_USER})" "${DEFAULT_USER_HOME}/catkin_ws"
 
 # Add python symbolic link
-RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN ln -s /usr/bin/python3.8 /usr/bin/python
 
 # Enter the container with a Bash shell.
 CMD ["/bin/bash"]
