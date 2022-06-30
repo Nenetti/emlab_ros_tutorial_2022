@@ -1,0 +1,15 @@
+<launch>
+
+    <arg name="hz" default="1"/>
+    <arg name="remap_topic_name" default="remapped_tutorial_string_topic"/>
+
+    <include file="$(find topic_tutorial)/launch/publisher.launch">
+      <arg name="hz" value="$(arg hz)" />
+      <arg name="remap_topic_name" value="$(arg remap_topic_name)" />
+    </include>
+
+    <include file="$(find topic_tutorial)/launch/subscriber.launch">
+      <arg name="remap_topic_name" value="$(arg remap_topic_name)" />
+    </include>
+
+</launch>
