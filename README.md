@@ -13,34 +13,19 @@ Emergent Systems Laboratory ROS1 Tutorial 2022
 **Content:**
 
 * [Overview](#Overview)
-* [Getting Started](#Setup)
+* [Getting Started](#Getting_Started)
+* [Example](#Example)
 
 <!--
 # ----------------------------------------------------------------------------------------------------------------------
 #
-#   Setup
+#   Getting Started
 #
 # ----------------------------------------------------------------------------------------------------------------------
 --->
 # Getting Started <a id="Setup"></a>
 
-Getting Started: [docs/getting_started.md](docs/getting_started.md).
-
-ビルドの要約
-(詳細は上記 `docs/getting_started.md`を参照)
-```
-sudo apt-get update && sudo apt-get install -y git 
-git clone https://github.com/Nenetti/emlab_ros_tutorial_2022.git
-cd emlab_ros_tutorial_2022
-bash ./SETUP-DEVELOPMENT-ENVIRONMENT.sh
-bash ./BUILD-DOCKER-IMAGE.sh
-```
-
-Docker起動コマンド要約
-```
-bash ./RUN-DOCKER-CONTAINER.sh
-docker exec -it -u simulator emlab-tutorial-simulator bash
-```
+詳細はこちら: [docs/getting_started.md](docs/getting_started.md).
 
 <!--
 # ----------------------------------------------------------------------------------------------------------------------
@@ -52,12 +37,5 @@ docker exec -it -u simulator emlab-tutorial-simulator bash
 
 ## Example <a id="Example"></a>
 
-roslaunch command in `emlab-tutorial-simulator` container
-```
-roslaunch em_fetch_gazebo teleop_world.launch 
-```
+詳細はこちら: [docs/example.md](docs/example.md).
 
-in local
-```
-bash RUN-TERMINATOR.sh 
-```
