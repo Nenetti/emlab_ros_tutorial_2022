@@ -1,0 +1,9 @@
+<launch>
+
+    <arg name="file_path" default="$(find rosbag_tutorial)/rosbag/sample1.bag"/>
+
+    <node pkg="rosbag_tutorial" type="read_sample.py" name="read_sample" output="screen">
+      <param name="file_path" type="string" value="$(arg file_path)"/>
+    </node>
+
+</launch>
