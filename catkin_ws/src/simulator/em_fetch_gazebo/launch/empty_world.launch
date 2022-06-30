@@ -1,4 +1,0 @@
-<launch>
-  <include file="$(find fetch_gazebo)/launch/simulation.launch" />
-  <include file="$(find em_fetch_rviz)/launch/rviz.launch" />
-</launch>
