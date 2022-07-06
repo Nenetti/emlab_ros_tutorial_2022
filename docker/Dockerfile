@@ -228,5 +228,7 @@ RUN mkdir -p "${DEFAULT_USER_HOME}/catkin_ws" \
 # Add python symbolic link
 RUN ln -s /usr/bin/python3.8 /usr/bin/python
 
+WORKDIR ${DEFAULT_USER_HOME}/catkin_ws
+
 # Enter the container with a Bash shell.
 CMD ["/bin/bash"]
