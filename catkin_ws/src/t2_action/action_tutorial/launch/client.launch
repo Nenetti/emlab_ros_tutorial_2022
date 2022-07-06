@@ -1,0 +1,11 @@
+<launch>
+
+    <arg name="sleep_time" default="5"/>
+    <arg name="remap_topic_name" default="remapped_tutorial_action"/>
+
+    <node pkg="action_tutorial" type="sample_client.py" name="sample_client" output="screen">
+        <remap from="/tutorial_action" to="$(arg remap_topic_name)"/>
+        <param name="sleep_time" type="double" value="$(arg sleep_time)"/>
+    </node>
+
+</launch>

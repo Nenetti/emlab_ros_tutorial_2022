@@ -1,0 +1,15 @@
+<launch>
+
+    <arg name="sleep_time" default="5"/>
+    <arg name="remap_topic_name" default="remapped_tutorial_action"/>
+
+    <include file="$(find action_tutorial)/launch/server.launch">
+        <arg name="remap_topic_name" value="$(arg remap_topic_name)"/>
+    </include>
+
+    <include file="$(find action_tutorial)/launch/client.launch">
+        <arg name="sleep_time" value="$(arg sleep_time)"/>
+        <arg name="remap_topic_name" value="$(arg remap_topic_name)"/>
+    </include>
+
+</launch>

@@ -1,0 +1,9 @@
+<launch>
+
+    <arg name="remap_topic_name" default="remapped_tutorial_action"/>
+
+    <node pkg="action_tutorial" type="sample_server.py" name="sample_server" output="screen">
+        <remap from="/tutorial_action" to="$(arg remap_topic_name)"/>
+    </node>
+
+</launch>
