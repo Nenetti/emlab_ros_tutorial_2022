@@ -66,6 +66,11 @@ sudo apt-get update && sudo apt-get install -y --no-install-recommends \
 sudo apt-get update && sudo apt-get install -y --no-install-recommends \
   terminator
 
+# Reset default terminal (If you had installed Terminator, the default terminal will be assigned it.)
+update-alternatives --set x-terminal-emulator /usr/bin/gnome-terminal.wrapper
+# Manual mode
+# sudo update-alternatives --config x-terminal-emulator
+
 # ----------------------------------------------------------------------------------------------------------------------
 #
 #   Git submodules
