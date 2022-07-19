@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="move_base_tutorial">
+
+	<executable package_path="move_base_behavior_tutorial.move_base_tutorial_sm" class="move_base_tutorialSM" />
+	<tagstring>tutorial</tagstring>
+	<author>kanechika</author>
+	<date>Tue Jul 19 2022</date>
+	<description>
+		description of move_base_tutorial
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>
