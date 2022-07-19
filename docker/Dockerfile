@@ -170,12 +170,18 @@ RUN python3 -m pip install --upgrade pip  \
 ARG ROS_ROBOT_CONTROLLERS_VERSION=*
 ARG ROS_RGBD_LAUNCH=*
 ARG PYTHON3_TK_VERSION=*
+ARG LIBXTST_DEV_VERSION=*
+ARG LIBCANBERRA_GTK_MODULE=*
+ARG LIBGCONF2_DEV=*
 
 # Install packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-noetic-robot-controllers=${ROS_ROBOT_CONTROLLERS_VERSION} \
     ros-noetic-rgbd-launch=${ROS_RGBD_LAUNCH} \
     python3-tk=${PYTHON3_TK_VERSION} \
+    libxtst-dev=${LIBXTST_DEV_VERSION} \
+    libcanberra-gtk3-module=${LIBCANBERRA_GTK_MODULE} \
+    libgconf2-dev=${LIBGCONF2_DEV} \
     && rm -rf /var/lib/apt/lists/*
 
 # ----------------------------------------------------------------------------------------------------------------------
