@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="tutorial">
+
+	<executable package_path="flexbe_behavior_tutorial.tutorial_sm" class="tutorialSM" />
+	<tagstring>tutorial</tagstring>
+	<author>kanechika</author>
+	<date>Tue Jul 19 2022</date>
+	<description>
+		description of tutorial
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>
