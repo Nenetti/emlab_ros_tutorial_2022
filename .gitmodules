@@ -1,3 +1,9 @@
 [submodule "catkin_ws/src/simulator/fetch_gazebo"]
 	path = catkin_ws/src/simulator/fetch_gazebo
 	url = https://github.com/fetchrobotics/fetch_gazebo.git
+[submodule "catkin_ws/src/t3_flexbe/submodules/flexbe_behavior_engine"]
+	path = catkin_ws/src/t3_flexbe/submodules/flexbe_behavior_engine
+	url = https://github.com/team-vigir/flexbe_behavior_engine.git
+[submodule "catkin_ws/src/t3_flexbe/submodules/flexbe_app"]
+	path = catkin_ws/src/t3_flexbe/submodules/flexbe_app
+	url = https://github.com/FlexBE/flexbe_app.git
