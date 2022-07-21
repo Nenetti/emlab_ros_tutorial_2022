@@ -94,7 +94,7 @@ class TutorialInputState(EventState):
         なお，他ステートから呼び出されるときにだけ呼び出される．
 
         """
-        rospy.loginfo(f"on_start: {userdata}")
+        rospy.loginfo(f"on_enter")
 
     def execute(self, userdata: UserData) -> str:
         """
@@ -104,8 +104,8 @@ class TutorialInputState(EventState):
         このプログラムでは，他ステートから得た，input_int_data の値を元に次の経路を決定している．
 
         """
-        rospy.loginfo(f"execute: {userdata}")
-        input_int_data: str = userdata.input_int_data
+        rospy.loginfo(f"execute")
+        input_int_data: int = userdata.input_int_data
         if input_int_data == 1:
             userdata.output_list = [1, 1]
             return "route1"
@@ -132,7 +132,7 @@ class TutorialInputState(EventState):
 
         """
         userdata.output_ndarray = np.array([1, 2])
-        rospy.loginfo(f"on_exit: {userdata}")
+        rospy.loginfo(f"on_exit")
 
     # 以下はそこまで重要ではないので説明は省く．
     # 気になる場合はWikiを参照すべし
